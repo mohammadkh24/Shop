@@ -1,0 +1,328 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Online-Shop | Document",
+    "description": "Online Shop Document",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "All routes about user auth"
+    },
+    {
+      "name": "Users",
+      "description": "All routes about users"
+    }
+  ],
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register New User",
+        "description": "This method is used to register new users in the system.",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "علی رضایی"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "ali@example.com"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "09121234567"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "123456"
+                  },
+                  "role": {
+                    "type": "string",
+                    "enum": ["USER", "ADMIN", "DOCTOR"],
+                    "example": "USER"
+                  }
+                },
+                "required": ["name", "email", "phone", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "ثبت‌نام موفقیت‌آمیز بود",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "ثبت نام با موفقیت انجام شد"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "example": "65f8c2e8d6f3a1b7e9a4f4c2"
+                        },
+                        "name": { "type": "string", "example": "علی رضایی" },
+                        "email": {
+                          "type": "string",
+                          "example": "ali@example.com"
+                        },
+                        "phone": { "type": "string", "example": "09121234567" },
+                        "role": { "type": "string", "example": "USER" }
+                      }
+                    },
+                    "accessToken": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "خطا در ثبت‌نام",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "کاربر با این شماره موبایل یا ایمیل قبلا ثبت نام کرده"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login User",
+        "description": "This method allows users to log in by providing their phone number and password, and it returns a JWT access token.",
+        "tags": ["Auth"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "phone": {
+                    "type": "string",
+                    "example": "09121234567",
+                    "description": "شماره موبایل کاربر"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": "123456",
+                    "description": "رمز عبور کاربر"
+                  }
+                },
+                "required": ["phone", "password"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "ورود موفقیت‌آمیز و دریافت توکن JWT",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "ورود با موفقیت انجام شد"
+                    },
+                    "accessToken": {
+                      "type": "string",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "خطا در وارد کردن شماره موبایل یا رمز عبور نادرست",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "شماره موبایل یا رمز عبور صحیح نیست"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "کاربر با این شماره موبایل یافت نشد",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "کاربر با این شماره موبایل پیدا نشد"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Get All Users",
+        "description": "This endpoint retrieves a list of all registered users, excluding their passwords.",
+        "tags": ["Users"],
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "لیست کاربران با موفقیت دریافت شد.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "example": "65f8c2e8d6f3a1b7e9a4f4c2"
+                      },
+                      "name": { "type": "string", "example": "علی رضایی" },
+                      "email": {
+                        "type": "string",
+                        "example": "ali@example.com"
+                      },
+                      "phone": { "type": "string", "example": "09121234567" },
+                      "role": { "type": "string", "example": "USER" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}/role": {
+      "put": {
+        "summary": "Change User Role",
+        "description": "This endpoint allows an admin to change a user's role.",
+        "tags": ["Users"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": { "type": "string", "example": "ADMIN" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "نقش کاربر با موفقیت تغییر یافت." },
+          "400": { "description": "آیدی وارد شده معتبر نیست." },
+          "404": { "description": "کاربر پیدا نشد." }
+        }
+      }
+    },
+    "/users/{id}/remove": {
+      "delete": {
+        "summary": "Delete User",
+        "description": "This endpoint allows an admin to delete a user by ID.",
+        "tags": ["Users"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "کاربر با موفقیت حذف شد." },
+          "400": { "description": "آیدی کاربر معتبر نیست." },
+          "404": { "description": "کاربر پیدا نشد." }
+        }
+      }
+    },
+    "/users/{id}/edit": {
+      "put": {
+        "summary": "Edit User Information",
+        "description": "This endpoint allows an admin to update a user's information.",
+        "tags": ["Users"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string", "example": "علی رضایی" },
+                  "email": { "type": "string", "example": "ali@example.com" },
+                  "phone": { "type": "string", "example": "09121234567" },
+                  "password": { "type": "string", "example": "newpassword" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "اطلاعات کاربر با موفقیت به‌روزرسانی شد." },
+          "400": { "description": "لطفا تمامی فیلدها را پر کنید." },
+          "404": { "description": "کاربر پیدا نشد." }
+        }
+      }
+    }
+  }
+}
