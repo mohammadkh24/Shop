@@ -13,6 +13,10 @@
     {
       "name": "Users",
       "description": "All routes about users"
+    },
+    {
+      "name": "Categories",
+      "description": "All routes about categories"
     }
   ],
   "paths": {
@@ -323,6 +327,202 @@
           "404": { "description": "کاربر پیدا نشد." }
         }
       }
-    }
+    },
+    "/categories": {
+        "get": {
+          "summary": "Get All Categories",
+          "description": "Retrieves a list of all available categories in the system.",
+          "tags": ["Categories"],
+          "responses": {
+            "200": {
+              "description": "List of categories retrieved successfully.",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "_id": { "type": "string", "example": "65f8c2e8d6f3a1b7e9a4f4c2" },
+                        "title": { "type": "string", "example": "الکترونیک" },
+                        "image": { "type": "string", "example": "/covers/electronics.jpg" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/categories/add": {
+        "post": {
+          "summary": "Add New Category",
+          "description": "Allows an admin to create a new category by providing a title and an image.",
+          "tags": ["Categories"],
+          "security": [{ "BearerAuth": [] }],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "title": { "type": "string", "example": "الکترونیک" },
+                    "image": { "type": "string", "format": "binary" }
+                  },
+                  "required": ["title", "image"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "دسته بندی با موفقیت ایجاد شد",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": { "type": "string", "example": "دسته بندی با موفقیت ایجاد شد" },
+                      "category": {
+                        "type": "object",
+                        "properties": {
+                          "_id": { "type": "string", "example": "65f8c2e8d6f3a1b7e9a4f4c2" },
+                          "title": { "type": "string", "example": "الکترونیک" },
+                          "image": { "type": "string", "example": "/covers/electronics.jpg" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "داده های ارسال شده نامعتبر هستند",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": { "type": "string", "example": "تصویر ارسال نشده!" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/categories/{id}/edit": {
+        "patch": {
+          "summary": "Edit Category",
+          "description": "Allows an admin to edit an existing category.",
+          "tags": ["Categories"],
+          "security": [{ "BearerAuth": [] }],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": { "type": "string" }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "title": { "type": "string", "example": "خانه و آشپزخانه" },
+                    "image": { "type": "string", "format": "binary" }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "دسته بندی با موفقیت ویرایش شد",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": { "type": "string", "example": "دسته بندی با موفقیت ویرایش شد" },
+                      "category": {
+                        "type": "object",
+                        "properties": {
+                          "_id": { "type": "string", "example": "65f8c2e8d6f3a1b7e9a4f4c2" },
+                          "title": { "type": "string", "example": "خانه و آشپزخانه" },
+                          "image": { "type": "string", "example": "/covers/home-kitchen.jpg" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "آیدی یا اطلاعات نامعتبر هستند",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": { "type": "string", "example": "آیدی دسته بندی معتبر نیست" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/categories/{id}/remove": {
+        "delete": {
+          "summary": "Delete Category",
+          "description": "Allows an admin to delete an existing category by ID.",
+          "tags": ["Categories"],
+          "security": [{ "BearerAuth": [] }],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": { "type": "string" }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "دسته بندی با موفقیت حذف شد",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": { "type": "string", "example": "دسته بندی با موفقیت حذف شد" }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "دسته بندی پیدا نشد",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": { "type": "string", "example": "دسته بندی پیدا نشد" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
   }
 }
