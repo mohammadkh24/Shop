@@ -5,6 +5,22 @@
     "description": "Online Shop Document",
     "version": "1.0.0"
   },
+
+  "servers": [
+    {
+      "url": "http://localhost:4000"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT authentication using Bearer token"
+      }
+    }
+  },
   "tags": [
     {
       "name": "Auth",
@@ -88,7 +104,10 @@
                           "type": "string",
                           "example": "ali@example.com"
                         },
-                        "phone": { "type": "string", "example": "09121234567" },
+                        "phone": {
+                          "type": "string",
+                          "example": "09121234567"
+                        },
                         "role": { "type": "string", "example": "USER" }
                       }
                     },
@@ -333,453 +352,687 @@
       }
     },
     "/categories": {
-        "get": {
-          "summary": "Get All Categories",
-          "description": "Retrieves a list of all available categories in the system.",
-          "tags": ["Categories"],
-          "responses": {
-            "200": {
-              "description": "List of categories retrieved successfully.",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "_id": { "type": "string", "example": "65f8c2e8d6f3a1b7e9a4f4c2" },
-                        "title": { "type": "string", "example": "الکترونیک" },
-                        "image": { "type": "string", "example": "/covers/electronics.jpg" }
+      "get": {
+        "summary": "Get All Categories",
+        "description": "Retrieves a list of all available categories in the system.",
+        "tags": ["Categories"],
+        "responses": {
+          "200": {
+            "description": "List of categories retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "example": "65f8c2e8d6f3a1b7e9a4f4c2"
+                      },
+                      "title": { "type": "string", "example": "الکترونیک" },
+                      "image": {
+                        "type": "string",
+                        "example": "/covers/electronics.jpg"
                       }
                     }
                   }
                 }
               }
-            }
-          }
-        }
-      },
-      "/categories/add": {
-        "post": {
-          "summary": "Add New Category",
-          "description": "Allows an admin to create a new category by providing a title and an image.",
-          "tags": ["Categories"],
-          "security": [{ "BearerAuth": [] }],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "title": { "type": "string", "example": "الکترونیک" },
-                    "image": { "type": "string", "format": "binary" }
-                  },
-                  "required": ["title", "image"]
-                }
-              }
-            }
-          },
-          "responses": {
-            "201": {
-              "description": "دسته بندی با موفقیت ایجاد شد",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": { "type": "string", "example": "دسته بندی با موفقیت ایجاد شد" },
-                      "category": {
-                        "type": "object",
-                        "properties": {
-                          "_id": { "type": "string", "example": "65f8c2e8d6f3a1b7e9a4f4c2" },
-                          "title": { "type": "string", "example": "الکترونیک" },
-                          "image": { "type": "string", "example": "/covers/electronics.jpg" }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "400": {
-              "description": "داده های ارسال شده نامعتبر هستند",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": { "type": "string", "example": "تصویر ارسال نشده!" }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/categories/{id}/edit": {
-        "patch": {
-          "summary": "Edit Category",
-          "description": "Allows an admin to edit an existing category.",
-          "tags": ["Categories"],
-          "security": [{ "BearerAuth": [] }],
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "required": true,
-              "schema": { "type": "string" }
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "title": { "type": "string", "example": "خانه و آشپزخانه" },
-                    "image": { "type": "string", "format": "binary" }
-                  }
-                }
-              }
-            }
-          },
-          "responses": {
-            "200": {
-              "description": "دسته بندی با موفقیت ویرایش شد",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": { "type": "string", "example": "دسته بندی با موفقیت ویرایش شد" },
-                      "category": {
-                        "type": "object",
-                        "properties": {
-                          "_id": { "type": "string", "example": "65f8c2e8d6f3a1b7e9a4f4c2" },
-                          "title": { "type": "string", "example": "خانه و آشپزخانه" },
-                          "image": { "type": "string", "example": "/covers/home-kitchen.jpg" }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "400": {
-              "description": "آیدی یا اطلاعات نامعتبر هستند",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": { "type": "string", "example": "آیدی دسته بندی معتبر نیست" }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/categories/{id}/remove": {
-        "delete": {
-          "summary": "Delete Category",
-          "description": "Allows an admin to delete an existing category by ID.",
-          "tags": ["Categories"],
-          "security": [{ "BearerAuth": [] }],
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "required": true,
-              "schema": { "type": "string" }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "دسته بندی با موفقیت حذف شد",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": { "type": "string", "example": "دسته بندی با موفقیت حذف شد" }
-                    }
-                  }
-                }
-              }
-            },
-            "404": {
-              "description": "دسته بندی پیدا نشد",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "object",
-                    "properties": {
-                      "message": { "type": "string", "example": "دسته بندی پیدا نشد" }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/products": {
-        "get": {
-          "summary": "Get all products",
-          "description": "Returns a list of all products",
-          "tags": ["Products"],
-          "responses": {
-            "200": {
-              "description": "List of products",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/Product"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/products/{id}": {
-        "get": {
-          "summary": "Get a single product by ID",
-          "description": "Returns a single product by its ID",
-          "tags": ["Products"],
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "format": "uuid"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Product details",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/Product"
-                  }
-                }
-              }
-            },
-            "400": {
-              "description": "Invalid product ID"
-            },
-            "404": {
-              "description": "Product not found"
-            }
-          }
-        },
-        "delete": {
-          "summary": "Delete a product by ID",
-          "description": "Deletes a product based on its ID",
-          "tags": ["Products"],
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "format": "uuid"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Product successfully deleted"
-            },
-            "400": {
-              "description": "Invalid product ID"
-            },
-            "404": {
-              "description": "Product not found"
-            }
-          }
-        }
-      },
-      "/products/category/{categoryID}": {
-        "get": {
-          "summary": "Get products by category",
-          "description": "Returns a list of products in a specific category",
-          "tags": ["Products"],
-          "parameters": [
-            {
-              "name": "categoryID",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "format": "uuid"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "List of products in the category",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/Product"
-                    }
-                  }
-                }
-              }
-            },
-            "400": {
-              "description": "Invalid category ID"
-            },
-            "404": {
-              "description": "Category not found"
-            }
-          }
-        }
-      },
-      "/products/add": {
-        "post": {
-          "summary": "Add a new product",
-          "description": "Adds a new product to the store",
-          "tags": ["Products"],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "title": {
-                      "type": "string"
-                    },
-                    "description": {
-                      "type": "string"
-                    },
-                    "price": {
-                      "type": "number",
-                      "format": "float"
-                    },
-                    "discount": {
-                      "type": "number",
-                      "format": "float"
-                    },
-                    "categoryID": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "image": {
-                      "type": "string",
-                      "format": "binary"
-                    }
-                  },
-                  "required": ["title", "description", "price", "categoryID", "image"]
-                }
-              }
-            }
-          },
-          "responses": {
-            "201": {
-              "description": "Product successfully added"
-            },
-            "400": {
-              "description": "Invalid input or missing fields"
-            },
-            "404": {
-              "description": "Category not found"
-            },
-            "500": {
-              "description": "Server error"
-            }
-          }
-        }
-      },
-      "/products/{id}/edit": {
-        "put": {
-          "summary": "Edit an existing product",
-          "description": "Updates an existing product based on its ID",
-          "tags": ["Products"],
-          "parameters": [
-            {
-              "name": "id",
-              "in": "path",
-              "required": true,
-              "schema": {
-                "type": "string",
-                "format": "uuid"
-              }
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "title": {
-                      "type": "string"
-                    },
-                    "description": {
-                      "type": "string"
-                    },
-                    "price": {
-                      "type": "number",
-                      "format": "float"
-                    },
-                    "discount": {
-                      "type": "number",
-                      "format": "float"
-                    },
-                    "categoryID": {
-                      "type": "string",
-                      "format": "uuid"
-                    },
-                    "image": {
-                      "type": "string",
-                      "format": "binary"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "responses": {
-            "200": {
-              "description": "Product successfully updated"
-            },
-            "400": {
-              "description": "Invalid input or missing fields"
-            },
-            "404": {
-              "description": "Product not found"
-            },
-            "500": {
-              "description": "Server error"
             }
           }
         }
       }
+    },
+    "/categories/add": {
+      "post": {
+        "summary": "Add New Category",
+        "description": "Allows an admin to create a new category by providing a title and an image.",
+        "tags": ["Categories"],
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string", "example": "الکترونیک" },
+                  "image": { "type": "string", "format": "binary" }
+                },
+                "required": ["title", "image"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "دسته بندی با موفقیت ایجاد شد",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "دسته بندی با موفقیت ایجاد شد"
+                    },
+                    "category": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "example": "65f8c2e8d6f3a1b7e9a4f4c2"
+                        },
+                        "title": { "type": "string", "example": "الکترونیک" },
+                        "image": {
+                          "type": "string",
+                          "example": "/covers/electronics.jpg"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "داده های ارسال شده نامعتبر هستند",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "تصویر ارسال نشده!"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/{id}/edit": {
+      "patch": {
+        "summary": "Edit Category",
+        "description": "Allows an admin to edit an existing category.",
+        "tags": ["Categories"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": { "type": "string", "example": "خانه و آشپزخانه" },
+                  "image": { "type": "string", "format": "binary" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "دسته بندی با موفقیت ویرایش شد",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "دسته بندی با موفقیت ویرایش شد"
+                    },
+                    "category": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "example": "65f8c2e8d6f3a1b7e9a4f4c2"
+                        },
+                        "title": {
+                          "type": "string",
+                          "example": "خانه و آشپزخانه"
+                        },
+                        "image": {
+                          "type": "string",
+                          "example": "/covers/home-kitchen.jpg"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "آیدی یا اطلاعات نامعتبر هستند",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "آیدی دسته بندی معتبر نیست"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/categories/{id}/remove": {
+      "delete": {
+        "summary": "Delete Category",
+        "description": "Allows an admin to delete an existing category by ID.",
+        "tags": ["Categories"],
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "دسته بندی با موفقیت حذف شد",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "دسته بندی با موفقیت حذف شد"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "دسته بندی پیدا نشد",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "دسته بندی پیدا نشد"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "summary": "Get all products",
+        "description": "Returns a list of all products",
+        "tags": ["Products"],
+        "responses": {
+          "200": {
+            "description": "List of products",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/{id}": {
+      "get": {
+        "summary": "Get a single product by ID",
+        "description": "Returns a single product by its ID",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid product ID"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a product by ID",
+        "description": "Deletes a product based on its ID",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product successfully deleted"
+          },
+          "400": {
+            "description": "Invalid product ID"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        }
+      }
+    },
+    "/products/category/{categoryID}": {
+      "get": {
+        "summary": "Get products by category",
+        "description": "Returns a list of products in a specific category",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "name": "categoryID",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of products in the category",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid category ID"
+          },
+          "404": {
+            "description": "Category not found"
+          }
+        }
+      }
+    },
+    "/products/add": {
+      "post": {
+        "summary": "Add a new product",
+        "description": "Adds a new product to the store",
+        "tags": ["Products"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "number",
+                    "format": "float"
+                  },
+                  "discount": {
+                    "type": "number",
+                    "format": "float"
+                  },
+                  "categoryID": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "title",
+                  "description",
+                  "price",
+                  "categoryID",
+                  "image"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Product successfully added"
+          },
+          "400": {
+            "description": "Invalid input or missing fields"
+          },
+          "404": {
+            "description": "Category not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/products/{id}/edit": {
+      "put": {
+        "summary": "Edit an existing product",
+        "description": "Updates an existing product based on its ID",
+        "tags": ["Products"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "number",
+                    "format": "float"
+                  },
+                  "discount": {
+                    "type": "number",
+                    "format": "float"
+                  },
+                  "categoryID": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "image": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product successfully updated"
+          },
+          "400": {
+            "description": "Invalid input or missing fields"
+          },
+          "404": {
+            "description": "Product not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/product-users": {
+      "get": {
+        "summary": "دریافت تمامی سفارشات کاربر",
+        "description": "دریافت سفارشات کاربر ثبت‌نام شده",
+        "operationId": "getAllProductUsers",
+        "tags": ["Product Users"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "لیست تمامی سفارشات کاربر",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "userID": {
+                        "type": "string"
+                      },
+                      "products": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "productID": {
+                              "type": "string"
+                            },
+                            "quantity": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "خطای سرور"
+          }
+        }
+      }
+    },
+    "/api/product-users/all": {
+      "get": {
+        "summary": "دریافت تمامی سفارشات (ادمین)",
+        "description": "دریافت تمامی سفارشات تمامی کاربران (فقط برای ادمین‌ها)",
+        "operationId": "getAllOrdersForAdmin",
+        "tags": ["Product Users"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "لیست تمامی سفارشات کاربران",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      },
+                      "userID": {
+                        "type": "string"
+                      },
+                      "products": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "productID": {
+                              "type": "string"
+                            },
+                            "quantity": {
+                              "type": "integer"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "خطای سرور"
+          }
+        }
+      }
+    },
+    "/api/product-users/checkout": {
+      "post": {
+        "summary": "ثبت سفارش",
+        "description": "ثبت سفارش محصولات توسط کاربر",
+        "operationId": "checkoutProducts",
+        "tags": ["Product Users"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "productID": {
+                          "type": "string"
+                        },
+                        "quantity": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "سفارش با موفقیت ثبت شد",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "order": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string"
+                        },
+                        "userID": {
+                          "type": "string"
+                        },
+                        "products": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "productID": {
+                                "type": "string"
+                              },
+                              "quantity": {
+                                "type": "integer"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "سبد خرید نامعتبر یا خالی"
+          },
+          "404": {
+            "description": "محصول پیدا نشد"
+          },
+          "500": {
+            "description": "خطای سرور"
+          }
+        }
+      }
+    }
   }
 }
-
-
-
-  
-  
-  
-  
