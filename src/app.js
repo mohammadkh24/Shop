@@ -5,6 +5,7 @@ const documentRouter = require("./modules/apiDoc/swagger.routes");
 const authRouter = require("./modules/Auth/auth.routes");
 const usersRouter = require("./modules/Users/users.routes");
 const categoriesRouter = require("./modules/Categories/categories.routes");
+const productsRouter = require("./modules/Products/product.routes");
 const path = require("path")
 
 const app = express();
@@ -21,6 +22,7 @@ app.use("/document", documentRouter);
 app.use("/auth", authRouter);
 app.use("/users", usersRouter);
 app.use("/categories", categoriesRouter);
+app.use("/products", productsRouter);
 
 // Not-Found Page
 app.use((req, res) => {

@@ -17,6 +17,10 @@
     {
       "name": "Categories",
       "description": "All routes about categories"
+    },
+    {
+      "name": "Products",
+      "description": "All routes about products"
     }
   ],
   "paths": {
@@ -523,6 +527,259 @@
             }
           }
         }
+      },
+      "/products": {
+        "get": {
+          "summary": "Get all products",
+          "description": "Returns a list of all products",
+          "tags": ["Products"],
+          "responses": {
+            "200": {
+              "description": "List of products",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/products/{id}": {
+        "get": {
+          "summary": "Get a single product by ID",
+          "description": "Returns a single product by its ID",
+          "tags": ["Products"],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Product details",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid product ID"
+            },
+            "404": {
+              "description": "Product not found"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete a product by ID",
+          "description": "Deletes a product based on its ID",
+          "tags": ["Products"],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Product successfully deleted"
+            },
+            "400": {
+              "description": "Invalid product ID"
+            },
+            "404": {
+              "description": "Product not found"
+            }
+          }
+        }
+      },
+      "/products/category/{categoryID}": {
+        "get": {
+          "summary": "Get products by category",
+          "description": "Returns a list of products in a specific category",
+          "tags": ["Products"],
+          "parameters": [
+            {
+              "name": "categoryID",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "List of products in the category",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Product"
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid category ID"
+            },
+            "404": {
+              "description": "Category not found"
+            }
+          }
+        }
+      },
+      "/products/add": {
+        "post": {
+          "summary": "Add a new product",
+          "description": "Adds a new product to the store",
+          "tags": ["Products"],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": "number",
+                      "format": "float"
+                    },
+                    "discount": {
+                      "type": "number",
+                      "format": "float"
+                    },
+                    "categoryID": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "image": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  },
+                  "required": ["title", "description", "price", "categoryID", "image"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Product successfully added"
+            },
+            "400": {
+              "description": "Invalid input or missing fields"
+            },
+            "404": {
+              "description": "Category not found"
+            },
+            "500": {
+              "description": "Server error"
+            }
+          }
+        }
+      },
+      "/products/{id}/edit": {
+        "put": {
+          "summary": "Edit an existing product",
+          "description": "Updates an existing product based on its ID",
+          "tags": ["Products"],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "uuid"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": "number",
+                      "format": "float"
+                    },
+                    "discount": {
+                      "type": "number",
+                      "format": "float"
+                    },
+                    "categoryID": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "image": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Product successfully updated"
+            },
+            "400": {
+              "description": "Invalid input or missing fields"
+            },
+            "404": {
+              "description": "Product not found"
+            },
+            "500": {
+              "description": "Server error"
+            }
+          }
+        }
       }
   }
 }
+
+
+
+  
+  
+  
+  
