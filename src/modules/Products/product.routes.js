@@ -13,6 +13,7 @@ router.route("/").get(controller.getAll);
 
 router.route("/:id").get(controller.getOne);
 router.route("/category/categoryID").get(controller.getByCategory);
+router.route("/discounts").get(controller.getByDiscounts);
 
 router
   .route("/add")

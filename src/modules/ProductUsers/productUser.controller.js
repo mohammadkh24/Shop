@@ -1,6 +1,5 @@
 const { isValidObjectId } = require("mongoose");
 const productUsersModel = require("../../models/productUsers");
-const usersModel = require("../models/users");
 const productModel = require("../../models/productUsers");
 
 exports.getAll = async (req, res) => {

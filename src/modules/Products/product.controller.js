@@ -160,3 +160,17 @@ exports.edit = async (req, res) => {
     updatedProduct,
   });
 };
+
+exports.getByDiscounts = async (req, res) => {
+  try {
+    const productsDiscount = await productsModel.find({ discount: { $gt: 0 } });
+
+    return res.json({
+      products: productsDiscount,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: "خطایی رخ داده است", error });
+  }
+};

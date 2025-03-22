@@ -838,7 +838,62 @@
         }
       }
     },
-    "/api/product-users": {
+    "/products/discounts": {
+      "get": {
+        "summary": "Get discounted products",
+        "description": "Get all discounted products",
+        "tags": ["Products"],
+        "responses": {
+          "200": {
+            "description": "موفقیت‌آمیز",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "products": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Product"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "خطای سرور",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "خطایی در سرور رخ داده است"
+                    },
+                    "error": {
+                      "type": "string",
+                      "example": "خطای داخلی سرور"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/orders": {
       "get": {
         "summary": "دریافت تمامی سفارشات کاربر",
         "description": "دریافت سفارشات کاربر ثبت‌نام شده",
@@ -891,7 +946,7 @@
         }
       }
     },
-    "/api/product-users/all": {
+    "/oreders/all": {
       "get": {
         "summary": "دریافت تمامی سفارشات (ادمین)",
         "description": "دریافت تمامی سفارشات تمامی کاربران (فقط برای ادمین‌ها)",
@@ -944,7 +999,7 @@
         }
       }
     },
-    "/api/product-users/checkout": {
+    "/orders/checkout": {
       "post": {
         "summary": "ثبت سفارش",
         "description": "ثبت سفارش محصولات توسط کاربر",
