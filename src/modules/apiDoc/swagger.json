@@ -37,6 +37,10 @@
     {
       "name": "Products",
       "description": "All routes about products"
+    },
+    {
+      "name": "Product Users",
+      "description": "All routes about orders"
     }
   ],
   "paths": {
@@ -588,18 +592,143 @@
     },
     "/products": {
       "get": {
-        "summary": "Get all products",
-        "description": "Returns a list of all products",
+        "summary": "Retrieve a list of products",
+        "description": "Retrieve a list of products",
         "tags": ["Products"],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "شماره صفحه (پیش‌فرض ۱)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "تعداد محصولات در هر صفحه (پیش‌فرض ۱۰، حداکثر ۱۰۰)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10,
+              "maximum": 100
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "فیلد برای مرتب‌سازی (پیش‌فرض `price`)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "price"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "ترتیب مرتب‌سازی (`asc` برای صعودی، `desc` برای نزولی - پیش‌فرض `asc`)",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          },
+          {
+            "name": "categoryID",
+            "in": "query",
+            "description": "آیدی دسته‌بندی برای فیلتر کردن محصولات",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "objectid"
+            }
+          },
+          {
+            "name": "minPrice",
+            "in": "query",
+            "description": "حداقل قیمت برای فیلتر کردن محصولات",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "maxPrice",
+            "in": "query",
+            "description": "حداکثر قیمت برای فیلتر کردن محصولات",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "List of products",
+            "description": "موفقیت‌آمیز",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Product"
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "integer",
+                      "description": "تعداد کل محصولات"
+                    },
+                    "page": {
+                      "type": "integer",
+                      "description": "شماره صفحه فعلی"
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "description": "تعداد محصولات در هر صفحه"
+                    },
+                    "totalPages": {
+                      "type": "integer",
+                      "description": "تعداد کل صفحات"
+                    },
+                    "products": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Product"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "درخواست نامعتبر (مثلاً آیدی دسته‌بندی معتبر نیست)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "آیدی دسته‌بندی معتبر نیست"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "خطای سرور",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "خطای سرور"
+                    }
                   }
                 }
               }
@@ -895,8 +1024,8 @@
     },
     "/orders": {
       "get": {
-        "summary": "دریافت تمامی سفارشات کاربر",
-        "description": "دریافت سفارشات کاربر ثبت‌نام شده",
+        "summary": "Get all user orders",
+        "description": "Get user orders",
         "operationId": "getAllProductUsers",
         "tags": ["Product Users"],
         "security": [
@@ -948,8 +1077,8 @@
     },
     "/oreders/all": {
       "get": {
-        "summary": "دریافت تمامی سفارشات (ادمین)",
-        "description": "دریافت تمامی سفارشات تمامی کاربران (فقط برای ادمین‌ها)",
+        "summary": "Get all oreders(Admin)",
+        "description": "Get all orders (Only for Admins)",
         "operationId": "getAllOrdersForAdmin",
         "tags": ["Product Users"],
         "security": [
@@ -1001,8 +1130,8 @@
     },
     "/orders/checkout": {
       "post": {
-        "summary": "ثبت سفارش",
-        "description": "ثبت سفارش محصولات توسط کاربر",
+        "summary": "Place an Order",
+        "description": "Place an Order by user",
         "operationId": "checkoutProducts",
         "tags": ["Product Users"],
         "security": [

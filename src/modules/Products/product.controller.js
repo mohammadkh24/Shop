@@ -3,9 +3,54 @@ const categoriesModel = require("../../models/categories");
 const { isValidObjectId } = require("mongoose");
 
 exports.getAll = async (req, res) => {
-  const products = await productsModel.find({}).lean();
+  try {
+    let {
+      page = 1,
+      limit = 10,
+      sortBy = "price",
+      order = "asc",
+      categoryID,
+      minPrice,
+      maxPrice,
+    } = req.query;
 
-  return res.json({ products });
+    page = parseInt(page);
+    limit = parseInt(limit);
+    const sortOrder = order === "asc" ? 1 : -1;
+
+    if (limit > 100) limit = 100;
+
+    let filter = {};
+    if (categoryID) {
+      if (!isValidObjectId(categoryID)) {
+        return res.status(400).json({ message: "آیدی دسته‌بندی معتبر نیست" });
+      }
+      filter.categoryID = categoryID;
+    }
+    if (minPrice) filter.price = { $gte: parseFloat(minPrice) };
+    if (maxPrice)
+      filter.price = { ...filter.price, $lte: parseFloat(maxPrice) };
+
+    const products = await productsModel
+      .find(filter)
+      .sort({ [sortBy]: sortOrder })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean();
+
+    const total = await productsModel.countDocuments(filter);
+
+    return res.json({
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      products,
+    });
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return res.status(500).json({ message: "خطای سرور" });
+  }
 };
 
 exports.getOne = async (req, res) => {
