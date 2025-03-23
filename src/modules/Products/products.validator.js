@@ -14,13 +14,6 @@ const productValidator = () => {
       .isLength({ min: 10 })
       .withMessage("توضیحات باید حداقل ۱۰ کاراکتر داشته باشد"),
 
-    //
-    // body("image")
-    //   .isURL()
-    //   .withMessage("آدرس تصویر باید یک URL معتبر باشد")
-    //   .matches(/\.(jpeg|jpg|gif|png)$/i)
-    //   .withMessage("آدرس تصویر باید فرمت معتبر jpeg، jpg، gif یا png داشته باشد"),
-
 
     body("discount")
       .isFloat({ min: 0 })
